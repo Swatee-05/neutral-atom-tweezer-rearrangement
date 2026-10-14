@@ -142,3 +142,69 @@ Static Trapping Array                Dynamic Shuttling Tweezers
                             │
                             ▼
              Atom Rearrangement in Vacuum
+
+---
+
+## 🧒 How It Works (Explained for Curious Minds & Kids)
+
+Imagine you are trying to build the world’s tiniest supercomputer using individual atoms as your Lego blocks, and the only tools you have are lasers!
+
+---
+
+### 1. What is an "Optical Tweezer"?
+Atoms are unimaginably small and float around like dust specks in the air. You can't pick them up with mechanical tweezers or your fingers.
+
+Instead, physicists take a laser beam and squeeze it down into an ultra-tight, microscopic point through a microscope lens. This laser focal point acts like a **sci-fi tractor beam**: it creates a tiny gravitational-like bowl of light that can trap exactly one atom and hold it hovering in place.
+
+---
+
+### 2. The Problem: The "Two's a Crowd" Rule
+You might ask: *"Why not just shine 64 laser beams and catch 64 atoms to make our 8×8 square?"*
+
+Because catching atoms is like playing a chaotic carnival game:
+* A big cloud of cold atoms floats over your laser traps.
+* If **0 atoms** fall into a trap $\rightarrow$ the trap stays empty.
+* If **1 atom** lands in a trap $\rightarrow$ it stays caught happily.
+* If **2 atoms** try to land in the same trap at the same time $\rightarrow$ the laser light energizes them, causing them to bump into each other like hyperactive bumper cars. Both atoms get kicked out instantly, leaving the trap completely empty!
+
+Because of this rule, every single trap only has about a **50% coin-flip chance** of catching an atom. 
+
+Trying to get all 64 traps to randomly catch an atom at the exact same second is like flipping a coin 64 times and getting heads on every single flip. The odds are about $1$ in $18,000,000,000,000,000,000$. It would never happen in millions of years!
+
+---
+
+### 3. The Workaround: Catch Extra, Then Play Sorter
+Instead of hoping for a miracle, we outsmart the odds:
+
+1. **Cast a bigger net:** We turn on $144$ laser traps ($12 \times 12$). Even with bad coin-flip luck, we easily catch 75 to 80 atoms scattered randomly across the board.
+2. **Take a photo:** A high-speed digital camera snaps a picture to see which traps got lucky (Red dots) and which stayed empty (Gray dots).
+3. **Use a laser crane:** A special motorized laser beam (called an AOD) grabs atoms one by one from the messy outer edges and carries them into the center to build a perfect $8 \times 8$ square (Blue rings).
+
+---
+
+### 4. The Three Golden Rules of the Sorting Brain
+
+Our algorithm acts as the autopilot for this laser crane, following three rules:
+
+#### 🚦 Rule 1: No Ghost-Walking (The Outer Hallway)
+Atoms cannot phase through each other. If your laser crane drags an atom right through another stationary atom, they smash together and both explode out of the computer. 
+* **The Solution:** We gave the algorithm an "outer hallway" (the purple dashed box). If an atom gets boxed in by its neighbors, it steps outside into the empty hallway, glides around the traffic jam, and steps back in safely.
+
+#### 🚗 Rule 2: Don't Block the Garage (Center-Outward Parking)
+Imagine parking cars in a narrow two-car garage. If you park at the entrance first, the second car cannot get into the back without crashing into you.
+* **The Solution:** The algorithm always fills the **dead center** of the target square first, and fills the outer ring last. That way, the entrance is always open for arriving atoms.
+
+#### ⏱️ Rule 3: Race the Melting Ice Cube (The Clock is Ticking!)
+Trapped atoms in a vacuum chamber are like ice cubes sitting out on a warm table—they have an expiration date. Stray gas molecules floating in the vacuum chamber will eventually bump into your atoms and knock them away.
+* **The Solution:** The laser crane has to be fast! Our algorithm routes atoms along the shortest possible paths so the entire 64-atom computer is assembled in under **$0.05$ seconds** (50 milliseconds), keeping $>99.8\%$ of the atoms safe and sound.
+
+---
+
+### 🎨 Cheat-Sheet: What the Game Colors Mean
+
+* <span style="color:#f43f5e; font-weight:bold;">Red Dot (●)</span> $\rightarrow$ **Stationary Atom:** A single atom resting in its laser trap.
+* <span style="color:#10b981; font-weight:bold;">Green Dot (●)</span> $\rightarrow$ **Moving Shuttle:** An atom being carried across the board by the laser crane.
+* <span style="color:#38bdf8; font-weight:bold;">Blue Ring (O)</span> $\rightarrow$ **Target Parking Spot:** The 64 spots where we need atoms to make our computer work.
+* <span style="color:#475569; font-weight:bold;">Gray Dot (·)</span> $\rightarrow$ **Empty Trap:** A laser trap waiting for an atom.
+* <span style="color:#fbbf24; font-weight:bold;">Yellow Dot (●)</span> $\rightarrow$ **Selected Atom:** The atom you clicked on when playing manually.
+* <span style="color:#9333ea; font-weight:bold;">Purple Dashed Line (- -)</span> $\rightarrow$ **Outer Hallway:** The detour lane used to bypass traffic jams.
