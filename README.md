@@ -122,11 +122,9 @@ Even running at a $100\,\text{Hz}$ repetition rate, loading an $8 \times 8$ regi
 
 The experimental apparatus utilizes a dual-path optical control system:
 
-```text
-
 ---
 
-## 7. 🧒 Explanation for Kids: How It Works Simply
+## 4. 🧒 Explanation for Kids: How It Works Simply
 
 Imagine trying to build a microscopic computer using individual atoms as Lego bricks, using lasers as your only tools!
 
@@ -135,7 +133,7 @@ Atoms are small and float around like dust specks in the air. They cannot be pic
 
 Instead, a laser beam is focused through a microscope lens down to a tight focal point. This point acts like a **tractor beam**: it creates a localized bowl of light that attracts and holds exactly one atom in place.
 
-### 7.2 The Problem: "Two's a Crowd"
+### 4.2 The Problem: "Two's a Crowd"
 Catching atoms is like a carnival game:
 * A cold cloud of atoms is washed over the laser array.
 * If **0 atoms** fall into a trap, it stays empty.
@@ -156,7 +154,7 @@ Instead of relying on luck:
 * **Center-Outward Parking:** If outer target positions are filled first, they form a wall that blocks atoms trying to reach the center. The algorithm fills the dead center of the target square first and works outward.
 * **Speed vs. Lifetime:** Trapped atoms have a finite lifetime before colliding with stray background gas particles. The algorithm finds the shortest possible paths so the entire assembly finishes in under $0.05$ seconds (50 milliseconds), maintaining a $>99.8\%$ survival rate.
 
-
+```text
 Cold Atom Cloud (MOT)
           │
           ▼
