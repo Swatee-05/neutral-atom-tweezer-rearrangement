@@ -154,6 +154,24 @@ Instead of relying on luck:
 * **Center-Outward Parking:** If outer target positions are filled first, they form a wall that blocks atoms trying to reach the center. The algorithm fills the dead center of the target square first and works outward.
 * **Speed vs. Lifetime:** Trapped atoms have a finite lifetime before colliding with stray background gas particles. The algorithm finds the shortest possible paths so the entire assembly finishes in under $0.05$ seconds (50 milliseconds), maintaining a $>99.8\%$ survival rate.
 
+Stochastic Array Loading (P ~ 0.55)
+                 │
+                 ▼
+     [EMCCD Fluorescence Readout]
+                 │
+                 ▼
+   [Minimum-Cost Bipartite Matching]  ──> Kuhn-Munkres (Hungarian) O(M³)
+                 │
+                 ▼
+    [Center-Outward Path Scheduler]   ──> Topological Deadlock Avoidance
+                 │
+                 ▼
+  [Perimeter-Buffered BFS Path Router] ──> Collision-Free Waypoints
+                 │
+                 ▼
+        Hardware Execution
+
+
 ```text
 Cold Atom Cloud (MOT)
           │
