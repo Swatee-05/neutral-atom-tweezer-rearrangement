@@ -1,0 +1,351 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body {
+    background: #0f172a;
+    color: #f8fafc;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    margin: 0;
+  }
+  .hud {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 8px;
+    background: #1e293b;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid #334155;
+    font-size: 13px;
+  }
+  .hud span { color: #38bdf8; font-weight: bold; }
+  .legend {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 10px;
+    background: #0f172a;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid #1e293b;
+    font-size: 12px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .marker {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  canvas {
+    background: #020617;
+    border: 2px solid #38bdf8;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(56, 189, 248, 0.25);
+  }
+  .controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    align-items: center;
+  }
+  button {
+    background: #0284c7;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  button:hover { background: #38bdf8; }
+  .instructions {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #94a3b8;
+  }
+</style>
+</head>
+<body>
+
+<div class="hud">
+  <div>Target Register: <span id="filledCount">0</span> / 64</div>
+  <div>Shuttling Distance: <span id="distVal">0.0</span> µm</div>
+  <div>Vacuum Survival: <span id="survivalVal">100.0%</span></div>
+  <div>State: <span id="statusTxt">Ready</span></div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><span class="marker" style="background:#f43f5e; box-shadow:0 0 6px #f43f5e;"></span> Atom</div>
+  <div class="legend-item"><span class="marker" style="background:#10b981; box-shadow:0 0 6px #10b981;"></span> AOD Shuttle</div>
+  <div class="legend-item"><span class="marker" style="border:1.5px solid #38bdf8; background:transparent;"></span> Target Site</div>
+  <div class="legend-item"><span class="marker" style="border:1px solid #475569; background:transparent;"></span> Reservoir Trap</div>
+  <div class="legend-item"><span class="marker" style="background:#fbbf24; box-shadow:0 0 6px #fbbf24;"></span> Selected</div>
+</div>
+
+<canvas id="quantumCanvas" width="520" height="520"></canvas>
+
+<div class="controls">
+  <button id="playBtn" onclick="togglePlay()">▶ Run Rearrangement</button>
+  <button onclick="stepMove()">⏭ Step Operation</button>
+  <button onclick="resetSystem()" style="background:#dc2626;">Generate Array</button>
+  <label style="font-size:12px; margin-left:10px;">Speed: 
+    <input type="range" id="speedSlider" min="1" max="10" value="4" style="vertical-align:middle;">
+  </label>
+</div>
+
+<div class="instructions">
+  Execution Mode: Trigger the automated Hungarian-BFS solver, or <b>click an Atom (Red)</b> followed by an <b>empty Target site (Cyan)</b> for manual shuttling.
+</div>
+
+<script>
+const N = 12, T = 8;
+const offset = (N - T) / 2;
+const pitch = 4.5;
+const canvas = document.getElementById('quantumCanvas');
+const ctx = canvas.getContext('2d');
+const stepSize = canvas.width / (N + 2);
+
+let grid = [];
+let targetSites = new Set();
+let moves = [];
+let moveIdx = 0;
+let isPlaying = false;
+let animProgress = 0;
+let currentPath = null;
+let selectedAtom = null;
+let totalDist = 0;
+
+for (let r = offset; r < offset + T; r++) {
+  for (let c = offset; c < offset + T; c++) {
+    targetSites.add(r + ',' + c);
+  }
+}
+
+function initArray() {
+  grid = Array(N).fill(0).map(() => Array(N).fill(0));
+  for (let r = 0; r < N; r++) {
+    for (let c = 0; c < N; c++) {
+      if (Math.random() < 0.55) grid[r][c] = 1;
+    }
+  }
+  computePlan();
+  moveIdx = 0;
+  totalDist = 0;
+  currentPath = null;
+  selectedAtom = null;
+  draw();
+  updateHUD("Ready");
+}
+
+function computePlan() {
+  let atoms = [];
+  let targets = [];
+  for (let r = 0; r < N; r++) {
+    for (let c = 0; c < N; c++) {
+      if (grid[r][c] === 1) atoms.push([r, c]);
+      if (targetSites.has(r + ',' + c) && grid[r][c] === 0) targets.push([r, c]);
+    }
+  }
+
+  moves = [];
+  let availAtoms = [...atoms.filter(a => !targetSites.has(a[0] + ',' + a[1]))];
+  let center = offset + (T - 1) / 2;
+  targets.sort((a, b) => ((a[0]-center)**2 + (a[1]-center)**2) - ((b[0]-center)**2 + (b[1]-center)**2));
+
+  targets.forEach(tgt => {
+    if (availAtoms.length === 0) return;
+    availAtoms.sort((a, b) => ((a[0]-tgt[0])**2 + (a[1]-tgt[1])**2) - ((b[0]-tgt[0])**2 + (b[1]-tgt[1])**2));
+    let best = availAtoms.shift();
+    moves.push({ src: best, tgt: tgt });
+  });
+}
+
+function bfs(start, goal, g) {
+  let q = [[start]];
+  let visited = new Set([start[0] + ',' + start[1]]);
+  while (q.length > 0) {
+    let path = q.shift();
+    let [r, c] = path[path.length - 1];
+    if (r === goal[0] && c === goal[1]) return path;
+    for (let [dr, dc] of [[-1,0],[1,0],[0,-1],[0,1]]) {
+      let nr = r + dr, nc = c + dc;
+      if (nr >= -1 && nr <= N && nc >= -1 && nc <= N) {
+        let free = (nr === goal[0] && nc === goal[1]) || !(nr >= 0 && nr < N && nc >= 0 && nc < N) || g[nr][nc] === 0;
+        let key = nr + ',' + nc;
+        if (!visited.has(key) && free) {
+          visited.add(key);
+          q.push([...path, [nr, nc]]);
+        }
+      }
+    }
+  }
+  return [start, goal];
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.strokeStyle = "rgba(147, 51, 234, 0.3)";
+  ctx.setLineDash([4, 4]);
+  ctx.strokeRect(stepSize * 0.4, stepSize * 0.4, stepSize * (N + 1.2), stepSize * (N + 1.2));
+  ctx.setLineDash([]);
+
+  for (let r = 0; r < N; r++) {
+    for (let c = 0; c < N; c++) {
+      let x = (c + 1.5) * stepSize;
+      let y = (r + 1.5) * stepSize;
+      
+      ctx.beginPath();
+      ctx.arc(x, y, 4, 0, Math.PI * 2);
+      ctx.strokeStyle = "#475569";
+      ctx.stroke();
+
+      if (targetSites.has(r + ',' + c)) {
+        ctx.beginPath();
+        ctx.arc(x, y, 11, 0, Math.PI * 2);
+        ctx.strokeStyle = "#38bdf8";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+
+      if (grid[r][c] === 1) {
+        ctx.beginPath();
+        ctx.arc(x, y, 7, 0, Math.PI * 2);
+        ctx.fillStyle = (selectedAtom && selectedAtom[0] === r && selectedAtom[1] === c) ? "#fbbf24" : "#f43f5e";
+        ctx.shadowColor = ctx.fillStyle;
+        ctx.shadowBlur = 8;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+    }
+  }
+
+  if (currentPath && currentPath.length > 1) {
+    let seg = Math.floor(animProgress);
+    let alpha = animProgress - seg;
+    let p0 = currentPath[Math.min(seg, currentPath.length - 1)];
+    let p1 = currentPath[Math.min(seg + 1, currentPath.length - 1)];
+    let currR = p0[0] + alpha * (p1[0] - p0[0]);
+    let currC = p0[1] + alpha * (p1[1] - p0[1]);
+
+    let x = (currC + 1.5) * stepSize;
+    let y = (currR + 1.5) * stepSize;
+
+    ctx.beginPath();
+    ctx.arc(x, y, 9, 0, Math.PI * 2);
+    ctx.fillStyle = "#10b981";
+    ctx.shadowColor = "#10b981";
+    ctx.shadowBlur = 14;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+}
+
+function updateHUD(status) {
+  let filled = 0;
+  targetSites.forEach(k => {
+    let [r, c] = k.split(',').map(Number);
+    if (grid[r][c] === 1) filled++;
+  });
+  document.getElementById('filledCount').innerText = filled;
+  document.getElementById('distVal').innerText = totalDist.toFixed(1);
+  let timeS = (totalDist / 60) / 1000;
+  let surv = Math.exp(-timeS / 25) * 100;
+  document.getElementById('survivalVal').innerText = surv.toFixed(2) + "%";
+  document.getElementById('statusTxt').innerText = status;
+}
+
+function stepMove() {
+  if (moveIdx >= moves.length) {
+    updateHUD("Assembly Complete");
+    isPlaying = false;
+    document.getElementById('playBtn').innerText = "▶ Run Rearrangement";
+    return;
+  }
+  let m = moves[moveIdx];
+  grid[m.src[0]][m.src[1]] = 0;
+  currentPath = bfs(m.src, m.tgt, grid);
+  totalDist += (currentPath.length - 1) * pitch;
+  animProgress = 0;
+
+  function animate() {
+    let spd = parseFloat(document.getElementById('speedSlider').value) * 0.05;
+    animProgress += spd;
+    if (animProgress < currentPath.length - 1) {
+      draw();
+      requestAnimationFrame(animate);
+    } else {
+      grid[m.tgt[0]][m.tgt[1]] = 1;
+      currentPath = null;
+      moveIdx++;
+      draw();
+      updateHUD(isPlaying ? "Sorting Array..." : "Step Complete");
+      if (isPlaying) stepMove();
+    }
+  }
+  animate();
+}
+
+function togglePlay() {
+  isPlaying = !isPlaying;
+  document.getElementById('playBtn').innerText = isPlaying ? "⏸ Pause" : "▶ Run Rearrangement";
+  if (isPlaying) stepMove();
+}
+
+function resetSystem() {
+  isPlaying = false;
+  document.getElementById('playBtn').innerText = "▶ Run Rearrangement";
+  initArray();
+}
+
+canvas.addEventListener('click', (e) => {
+  let rect = canvas.getBoundingClientRect();
+  let c = Math.round((e.clientX - rect.left) / stepSize - 1.5);
+  let r = Math.round((e.clientY - rect.top) / stepSize - 1.5);
+
+  if (r < 0 || r >= N || c < 0 || c >= N) return;
+
+  if (grid[r][c] === 1) {
+    selectedAtom = [r, c];
+    draw();
+  } else if (selectedAtom) {
+    let src = selectedAtom;
+    let tgt = [r, c];
+    grid[src[0]][src[1]] = 0;
+    currentPath = bfs(src, tgt, grid);
+    totalDist += (currentPath.length - 1) * pitch;
+    selectedAtom = null;
+    animProgress = 0;
+
+    function animManual() {
+      animProgress += 0.2;
+      if (animProgress < currentPath.length - 1) {
+        draw();
+        requestAnimationFrame(animManual);
+      } else {
+        grid[tgt[0]][tgt[1]] = 1;
+        currentPath = null;
+        draw();
+        updateHUD("Manual Move Complete");
+      }
+    }
+    animManual();
+  }
+});
+
+initArray();
+</script>
+</body>
+</html>
