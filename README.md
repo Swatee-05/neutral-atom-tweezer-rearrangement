@@ -16,8 +16,8 @@ A deterministic motion-planning and routing pipeline designed to assemble defect
 Run and test the algorithmic engine directly in your browser:  
 👉 **[Launch Interactive Web Simulator](https://Swatee-05.github.io/neutral-atom-tweezer-rearrangement/)**
 
-* **Autonomous Execution:** Solves bipartite matching and routes atoms sequentially using center-outward heuristic scheduling and perimeter-buffered breadth-first search.
-* **Manual Control:** Click any static atom (Red) and select an open target trap (Blue ring) to manually execute collision-free shuttling trajectories.
+- **Autonomous Execution:** Solves bipartite matching and routes atoms sequentially using center-outward heuristic scheduling and perimeter-buffered breadth-first search.
+- **Manual Control:** Click any static atom (Red) and select an open target trap (Blue ring) to manually execute collision-free shuttling trajectories.
 
 ---
 
@@ -34,11 +34,11 @@ Run and test the algorithmic engine directly in your browser:
 
 ---
 
-## 1. Physical Foundations: Optical Dipole Traps (Tweezers)
+## Physical Foundations: Optical Dipole Traps (Tweezers)
 
 An optical tweezer is an attractive potential well created by focusing a Gaussian laser beam through a high-numerical-aperture ($\text{NA} \ge 0.5$) microscope objective down to a diffraction-limited beam waist $w_0 \approx 0.7 - 1.0\,\mu\text{m}$.
 
-### 1.1 The Optical Dipole Force (AC Stark Shift)
+### The Optical Dipole Force (AC Stark Shift)
 When an electric field $\mathbf{E}(\mathbf{r}, t) = \hat{\mathbf{e}} E(\mathbf{r}) e^{-i\omega_L t} + \text{c.c.}$ interacts with an isolated neutral alkali atom (e.g., $^{87}\text{Rb}$, $^{133}\text{Cs}$) or alkaline-earth atom ($^{171}\text{Yb}$), it induces an oscillating atomic electric dipole moment:
 
 $$\mathbf{d}(\mathbf{r}, t) = \alpha(\omega_L) \mathbf{E}(\mathbf{r}, t)$$
@@ -51,14 +51,14 @@ For a two-level atomic transition with resonant frequency $\omega_0$, natural de
 
 $$U_{\text{dip}}(\mathbf{r}) = \frac{3\pi c^2}{2 \omega_0^3} \left( \frac{\Gamma}{\Delta} \right) I(\mathbf{r})$$
 
-* **Far Red Detuned ($\omega_L < \omega_0 \implies \Delta < 0$):** The dipole potential is negative ($U_{\text{dip}} < 0$). Atoms are conservatively attracted toward intensity maxima (the laser focal center).
-* **Photon Scattering Rate:** The accompanying spontaneous emission rate scales as:
+- **Far Red Detuned ($\omega_L < \omega_0 \implies \Delta < 0$):** The dipole potential is negative ($U_{\text{dip}} < 0$). Atoms are conservatively attracted toward intensity maxima (the laser focal center).
+- **Photon Scattering Rate:** The accompanying spontaneous emission rate scales as:
 
 $$\Gamma_{\text{sc}}(\mathbf{r}) = \frac{3\pi c^2}{2\hbar \omega_0^3} \left( \frac{\Gamma}{\Delta} \right)^2 I(\mathbf{r}) = \frac{\Gamma}{\hbar \Delta} U_{\text{dip}}(\mathbf{r})$$
 
 By choosing large red detuning ($\vert{}\Delta\vert{} \gg \Gamma$), experimentalists maintain deep trapping potentials ($U_0 / k_B \sim 0.5 - 1.5\,\text{mK}$) while suppressing photon scattering to rates below $1\,\text{s}^{-1}$, isolating the atomic quantum state.
 
-### 1.2 Harmonic Oscillator Approximation
+### Harmonic Oscillator Approximation
 The intensity profile of a Gaussian laser propagating along $\hat{z}$ is:
 
 $$I(r, z) = \frac{2P}{\pi w(z)^2} \exp\left( -\frac{2r^2}{w(z)^2} \right), \quad w(z) = w_0 \sqrt{1 + \left(\frac{z}{z_R}\right)^2}$$
@@ -75,27 +75,30 @@ where $m$ is the atomic mass. Typically, $\omega_r \sim 2\pi \times (50 - 150)\,
 
 ---
 
-## 2. The Core Challenge: Light-Assisted Collisional Blockade
+## The Core Challenge: Light-Assisted Collisional Blockade
 
 To perform gate-based quantum computing, quantum registers require **exactly one atom per trap site**. However, loading neutral atoms directly into microscopic optical tweezers from a cold magneto-optical trap (MOT) or optical molasses is fundamentally stochastic.
 
-### 2.1 The Two-Body Loss Rate Equation
+### The Two-Body Loss Rate Equation
 The atom number distribution $N(t)$ within a microscopic tweezer volume is governed by:
 
 $$\frac{dN}{dt} = R - \gamma N - \beta' N(N - 1)$$
 
 where:
-* $R$ is the single-atom capture rate from the surrounding atomic cloud.
-* $\gamma$ is the one-body background gas collision rate ($\gamma \approx 1/\tau_{\text{vac}} \sim 0.04\,\text{s}^{-1}$).
-* $\beta'$ is the two-body light-assisted collision parameter.
+- $R$ is the single-atom capture rate from the surrounding atomic cloud.
+- $\gamma$ is the one-body background gas collision rate ($\gamma \approx 1/\tau_{\text{vac}} \sim 0.04\,\text{s}^{-1}$).
+- $\beta'$ is the two-body light-assisted collision parameter.
 
-### 2.2 Collisional Parity Projection
+### Collisional Parity Projection
 Because the optical tweezer volume is microscopic ($\sim 1\,\mu\text{m}^3$), the effective two-body collision rate is large: $\beta' \sim 10^4 - 10^5\,\text{s}^{-1} \gg R, \gamma$.
 
 When two atoms occupy the same potential well in the presence of near-resonant cooling light:
-1. The atoms absorb a laser photon and form a transient repulsive or attractive quasi-molecular state.
-2. Inelastic decay converts electronic excitation energy into kinetic energy: $\Delta E_{\text{kinetic}} \sim 1 - 10\,\text{K}$.
-3. Because the trap depth is only $U_0 / k_B \sim 1\,\text{mK}$, **both colliding atoms are ejected simultaneously**.
+
+The atoms absorb a laser photon and form a transient repulsive or attractive quasi-molecular state.
+
+Inelastic decay converts electronic excitation energy into kinetic energy: $\Delta E_{\text{kinetic}} \sim 1 - 10\,\text{K}$.
+
+Because the trap depth is only $U_0 / k_B \sim 1\,\text{mK}$, **both colliding atoms are ejected simultaneously**.
 
 Consequently, the steady-state occupancy projects onto the parity of the number of entering atoms:
 
@@ -105,12 +108,12 @@ This caps the passive loading probability of an isolated tweezer at:
 
 $$P_{\text{load}} \approx 0.50 - 0.55$$
 
-### 2.3 The Exponential Register Scaling Bottleneck
+### The Exponential Register Scaling Bottleneck
 For an $N_{\text{target}}$-qubit register, the joint probability of loading all traps simultaneously without active defect-correction is:
 
 $$P_{\text{success}} = (P_{\text{load}})^{N_{\text{target}}} \approx (0.50)^{N_{\text{target}}}$$
 
-* For an $8 \times 8$ register ($N_{\text{target}} = 64$):
+- For an $8 \times 8$ register ($N_{\text{target}} = 64$):
   
 $$P_{\text{success}} = (0.5)^{64} \approx 5.42 \times 10^{-20}$$
 
@@ -118,7 +121,7 @@ Even running at a $100\,\text{Hz}$ repetition rate, loading an $8 \times 8$ regi
 
 ---
 
-## 3. Hardware Architecture: SLM + AOD Integration
+## Hardware Architecture: SLM + AOD Integration
 
 The experimental apparatus utilizes a dual-path optical control system:
 
@@ -126,12 +129,12 @@ The experimental apparatus utilizes a dual-path optical control system:
 
 <hr />
 
-<h2>1. Physical Foundations: Optical Dipole Traps (Tweezers)</h2>
+<h2>Physical Foundations: Optical Dipole Traps (Tweezers)</h2>
 <p>
   An optical tweezer is an attractive potential well created by focusing a Gaussian laser beam through a high-numerical-aperture ($\text{NA} \ge 0.5$) microscope objective down to a diffraction-limited beam waist $w_0 \approx 0.7 - 1.0\,\mu\text{m}$.
 </p>
 
-<h3>1.1 The Optical Dipole Force (AC Stark Shift)</h3>
+<h3>The Optical Dipole Force (AC Stark Shift)</h3>
 <p>
   When an oscillating electric field $\mathbf{E}(\mathbf{r}, t) = \hat{\mathbf{e}} E(\mathbf{r}) e^{-i\omega_L t} + \text{c.c.}$ interacts with an isolated neutral alkali atom (e.g., <sup>87</sup>Rb, <sup>133</sup>Cs) or alkaline-earth atom (<sup>171</sup>Yb), it induces an oscillating atomic electric dipole moment:
 </p>
@@ -159,10 +162,10 @@ The experimental apparatus utilizes a dual-path optical control system:
   </li>
 </ul>
 <p>
-  By maintaining large red detuning ($|\Delta| \gg \Gamma$), experimental setups sustain deep trapping potentials ($U_0 / k_B \sim 0.5 - 1.5\,\text{mK}$) while suppressing photon scattering rates below $1\,\text{s}^{-1}$, preserving atomic coherence.
+  By maintaining large red detuning ($\vert{}\Delta\vert{} \gg \Gamma$), experimental setups sustain deep trapping potentials ($U_0 / k_B \sim 0.5 - 1.5\,\text{mK}$) while suppressing photon scattering rates below $1\,\text{s}^{-1}$, preserving atomic coherence.
 </p>
 
-<h3>1.2 Harmonic Oscillator Approximation</h3>
+<h3>Harmonic Oscillator Approximation</h3>
 <p>
   The intensity profile of a Gaussian beam propagating along $\hat{z}$ is given by:
 </p>
@@ -185,12 +188,12 @@ The experimental apparatus utilizes a dual-path optical control system:
 
 <hr />
 
-<h2>2. The Core Challenge: Light-Assisted Collisional Blockade</h2>
+<h2>The Core Challenge: Light-Assisted Collisional Blockade</h2>
 <p>
   Scalable quantum computation requires <b>exactly one atom per tweezer site</b>. However, initial trap loading from a magneto-optical trap (MOT) or optical molasses is fundamentally stochastic.
 </p>
 
-<h3>2.1 The Two-Body Loss Rate Equation</h3>
+<h3>The Two-Body Loss Rate Equation</h3>
 <p>
   The time-dependent atom number distribution $N(t)$ within an individual microscopic optical trap is governed by:
 </p>
@@ -203,15 +206,19 @@ The experimental apparatus utilizes a dual-path optical control system:
   <li>$\beta'$ is the two-body light-assisted collision rate coefficient.</li>
 </ul>
 
-<h3>2.2 Collisional Parity Projection</h3>
+<h3>Collisional Parity Projection</h3>
 <p>
   Because the tweezer focal volume is microscopic ($\sim 1\,\mu\text{m}^3$), the two-body loss rate is massive: $\beta' \sim 10^4 - 10^5\,\text{s}^{-1} \gg R, \gamma$. When two atoms occupy the same potential well under cooling illumination:
 </p>
-<ol>
-  <li>The atoms absorb a photon and form a transient molecular state.</li>
-  <li>Inelastic decay converts electronic excitation into kinetic energy ($\Delta E \sim 1 - 10\,\text{K}$).</li>
-  <li>Because trap depths are only $U_0 / k_B \sim 1\,\text{mK}$, <b>both colliding atoms are immediately ejected from the trap</b>.</li>
-</ol>
+<p>
+  The atoms absorb a photon and form a transient molecular state.
+</p>
+<p>
+  Inelastic decay converts electronic excitation into kinetic energy ($\Delta E \sim 1 - 10\,\text{K}$).
+</p>
+<p>
+  Because trap depths are only $U_0 / k_B \sim 1\,\text{mK}$, <b>both colliding atoms are immediately ejected from the trap</b>.
+</p>
 <p>
   Consequently, final trap occupancy projects onto the parity of the loaded atom count:
 </p>
@@ -222,7 +229,7 @@ The experimental apparatus utilizes a dual-path optical control system:
   This fixes the passive loading probability of an isolated tweezer at $P_{\text{load}} \approx 0.50 - 0.55$.
 </p>
 
-<h3>2.3 Exponential Register Scaling Bottleneck</h3>
+<h3>Exponential Register Scaling Bottleneck</h3>
 <p>
   For an $N_{\text{target}}$-qubit register, the probability of concurrently loading all sites by chance is:
 </p>
@@ -235,7 +242,7 @@ The experimental apparatus utilizes a dual-path optical control system:
 
 <hr />
 
-<h2>3. Hardware Architecture: SLM + AOD Integration</h2>
+<h2>Hardware Architecture: SLM + AOD Integration</h2>
 <p>
   The experimental layout uses a dual-path optical control architecture:
 </p>
@@ -259,27 +266,31 @@ Static Trapping Array                Dynamic Shuttling Tweezers
               High-NA Microscope Objective
                             │
                             ▼
-             Atom Rearrangement in Vacuum
+              Atom Rearrangement in Vacuum
 </pre>
 
-<ol>
-  <li><b>Static Trapping Array (SLM):</b> A phase-only Spatial Light Modulator applies a computed 2D phase hologram $\Phi(x, y)$ calculated via the Gerchberg-Saxton algorithm, generating the static $12 \times 12$ reservoir grid.</li>
-  <li><b>Dynamic Shuttling Tweezers (AOD):</b> A pair of orthogonal Acousto-Optic Deflectors driven by RF acoustic waves steer dynamic tweezers via Bragg diffraction:
-    <p align="center">
-      $$\theta(t) \approx \frac{\lambda_{\text{laser}}}{v_{\text{acoustic}}} f_{\text{RF}}(t)$$
-    </p>
-    Chirping $f_{\text{RF}}(t)$ translates the optical focal point with sub-nanometer precision.
-  </li>
-  <li><b>Adiabatic Handshake:</b> To transfer atoms between static and dynamic traps without heating, trap depths are ramped simultaneously:
-    <p align="center">
-      $$U_{\text{tot}}(\mathbf{r}, t) = [1 - \lambda(t)] U_{\text{SLM}}(\mathbf{r}) + \lambda(t) U_{\text{AOD}}(\mathbf{r}), \quad \lambda(t) \in [0, 1]$$
-    </p>
-  </li>
-</ol>
+<p>
+  <b>Static Trapping Array (SLM):</b> A phase-only Spatial Light Modulator applies a computed 2D phase hologram $\Phi(x, y)$ calculated via the Gerchberg-Saxton algorithm, generating the static $12 \times 12$ reservoir grid.
+</p>
+<p>
+  <b>Dynamic Shuttling Tweezers (AOD):</b> A pair of orthogonal Acousto-Optic Deflectors driven by RF acoustic waves steer dynamic tweezers via Bragg diffraction:
+</p>
+<p align="center">
+  $$\theta(t) \approx \frac{\lambda_{\text{laser}}}{v_{\text{acoustic}}} f_{\text{RF}}(t)$$
+</p>
+<p>
+  Chirping $f_{\text{RF}}(t)$ translates the optical focal point with sub-nanometer precision.
+</p>
+<p>
+  <b>Adiabatic Handshake:</b> To transfer atoms between static and dynamic traps without heating, trap depths are ramped simultaneously:
+</p>
+<p align="center">
+  $$U_{\text{tot}}(\mathbf{r}, t) = [1 - \lambda(t)] U_{\text{SLM}}(\mathbf{r}) + \lambda(t) U_{\text{AOD}}(\mathbf{r}), \quad \lambda(t) \in [0, 1]$$
+</p>
 
 <hr />
 
-<h2>4. Algorithmic Pipeline &amp; Mathematical Formulations</h2>
+<h2>Algorithmic Pipeline &amp; Mathematical Formulations</h2>
 
 <pre>
 Stochastic Array Loading (P ~ 0.55)
@@ -300,7 +311,7 @@ Stochastic Array Loading (P ~ 0.55)
         Hardware Execution
 </pre>
 
-<h3>Step 1: Occupancy Detection &amp; Coordinate Mapping</h3>
+<h3>Occupancy Detection &amp; Coordinate Mapping</h3>
 <p>
   An EMCCD camera detects fluorescence under optical molasses. Thresholding generates a binary occupancy matrix $\mathcal{M} \in \{0, 1\}^{N \times N}$.
 </p>
@@ -309,7 +320,7 @@ Stochastic Array Loading (P ~ 0.55)
   <li><b>Target Coordinates:</b> $\mathcal{T} = \{\mathbf{t}_1, \dots, \mathbf{t}_K\} \subset \mathbb{Z}^2$, where $K = 64$ for an $8 \times 8$ register centered within the $12 \times 12$ array with offset $\delta = (12 - 8) / 2 = 2$.</li>
 </ul>
 
-<h3>Step 2: Global Cost Optimization (Hungarian Assignment)</h3>
+<h3>Global Cost Optimization (Hungarian Assignment)</h3>
 <p>
   The cost matrix $C \in \mathbb{R}^{M \times K}$ uses squared Euclidean distance to penalize large single-atom displacements:
 </p>
@@ -330,7 +341,7 @@ Stochastic Array Loading (P ~ 0.55)
   $$\max_{u, v} \left( \sum_{i=1}^M u_i + \sum_{j=1}^K v_j \right) \quad \text{subject to} \quad u_i + v_j \le C_{ij}$$
 </p>
 
-<h3>Step 3: Center-Outward Heuristic Motion Scheduling</h3>
+<h3>Center-Outward Heuristic Motion Scheduling</h3>
 <p>
   To prevent target-boundary sites from sealing off central vacancies, target sites are prioritized by radial distance from the centroid $\mathbf{c}_T = \left(\delta + \frac{T - 1}{2}, \delta + \frac{T - 1}{2}\right)$:
 </p>
@@ -341,7 +352,7 @@ Stochastic Array Loading (P ~ 0.55)
   Sorting assignments by $\mathcal{R}(\mathbf{t}_j)$ fills central positions first, leaving perimeter pathways accessible for later transfers.
 </p>
 
-<h3>Step 4: Perimeter-Buffered Collision-Free BFS Router</h3>
+<h3>Perimeter-Buffered Collision-Free BFS Router</h3>
 <p>
   During transport, moving atoms must not intersect occupied traps. The array is embedded inside an expanded grid graph $\mathcal{V} = \{(r, c) \in \mathbb{Z}^2 \mid -1 \le r \le N_{\text{res}}, -1 \le c \le N_{\text{res}}\}$, where boundary lines $r, c \in \{-1, N_{\text{res}}\}$ define a clear perimeter corridor.
 </p>
@@ -355,9 +366,9 @@ Stochastic Array Loading (P ~ 0.55)
 
 <hr />
 
-<h2>5. Physical AMO Metrics &amp; Performance Benchmarks</h2>
+<h2>Physical AMO Metrics &amp; Performance Benchmarks</h2>
 
-<h3>5.1 Transport Kinematics &amp; Timing</h3>
+<h3>Transport Kinematics &amp; Timing</h3>
 <ul>
   <li><b>Total Distance:</b> $D_{\text{total}} = \sum_{k=1}^{N_{\text{moves}}} (L(P_k) - 1) \cdot a$, where $a = 4.5\,\mu\text{m}$.</li>
   <li><b>Translation Time:</b> $t_{\text{trans}} = \frac{D_{\text{total}}}{v_{\text{AOD}}}$ with velocity $v_{\text{AOD}} = 60\,\mu\text{m/ms}$.</li>
@@ -365,14 +376,14 @@ Stochastic Array Loading (P ~ 0.55)
   <li><b>Total Assembly Duration:</b> $T_{\text{cycle}} = t_{\text{trans}} + t_{\text{overhead}}$.</li>
 </ul>
 
-<h3>5.2 Survival Probability Formulations</h3>
+<h3>Survival Probability Formulations</h3>
 <ul>
   <li><b>Vacuum Background Survival:</b> $P_{\text{vac}} = \exp\left( -\frac{T_{\text{cycle}}}{\tau_{\text{vac}}} \right)$ where $\tau_{\text{vac}} \approx 25.0\,\text{s}$.</li>
   <li><b>Transport Survival:</b> $P_{\text{transfer}} = (1 - \epsilon_{\text{loss}})^{N_{\text{moves}}}$ with single-move transfer loss $\epsilon_{\text{loss}} = 0.002$.</li>
   <li><b>Net Assembly Yield:</b> $\mathcal{F}_{\text{net}} = P_{\text{vac}} \times P_{\text{transfer}}$.</li>
 </ul>
 
-<h3>5.3 System Benchmarks ($12 \times 12 \to 8 \times 8$)</h3>
+<h3>System Benchmarks ($12 \times 12 \to 8 \times 8$)</h3>
 
 <table>
   <thead>
@@ -423,7 +434,7 @@ Stochastic Array Loading (P ~ 0.55)
 
 <hr />
 
-<h2>6. Software Architecture</h2>
+<h2>Software Architecture</h2>
 <ul>
   <li><b>Matching Engine:</b> Computes optimal source-to-target assignment via Kuhn-Munkres cost minimization (<code>scipy.optimize.linear_sum_assignment</code>).</li>
   <li><b>Motion Planner:</b> Graph traversal router with dynamic obstacle masking and perimeter-corridor graph expansion.</li>
@@ -433,35 +444,38 @@ Stochastic Array Loading (P ~ 0.55)
 
 <hr />
 
-## 4. 🧒 Explanation for Kids: How It Works Simply
+## 🧒 Explanation for Kids: How It Works Simply
 
 Imagine trying to build a microscopic computer using individual atoms as Lego bricks, using lasers as your only tools!
 
-### 4.1 What is an Optical Tweezer?
+### What is an Optical Tweezer?
 Atoms are small and float around like dust specks in the air. They cannot be picked up with mechanical tools.
 
 Instead, a laser beam is focused through a microscope lens down to a tight focal point. This point acts like a **tractor beam**: it creates a localized bowl of light that attracts and holds exactly one atom in place.
 
-### 4.2 The Problem: "Two's a Crowd"
+### The Problem: "Two's a Crowd"
 Catching atoms is like a carnival game:
-* A cold cloud of atoms is washed over the laser array.
-* If **0 atoms** fall into a trap, it stays empty.
-* If **1 atom** lands in a trap, it stays trapped.
-* If **2 atoms** land in the same trap at the same time, the laser light causes them to bump together with high energy. Both atoms get kicked out immediately, leaving the trap empty.
+- A cold cloud of atoms is washed over the laser array.
+- If **0 atoms** fall into a trap, it stays empty.
+- If **1 atom** lands in a trap, it stays trapped.
+- If **2 atoms** land in the same trap at the same time, the laser light causes them to bump together with high energy. Both atoms get kicked out immediately, leaving the trap empty.
 
 Because of this rule, every trap has roughly a **50% coin-flip chance** of catching an atom. Getting 64 traps to all catch an atom at the exact same instant by pure chance is roughly $1$ in $1.8 \times 10^{19}$.
 
-### 4.3 The Strategy: Over-Provision and Rearrange
+### The Strategy: Over-Provision and Rearrange
 Instead of relying on luck:
-1. **Cast a wider net:** Shine $144$ laser traps ($12 \times 12$). With 50% odds, 75 to 80 atoms are caught across the grid.
-2. **Take a picture:** A sensitive camera identifies which traps are filled (Red dots) and which are empty (Gray dots).
-3. **Use a moving laser crane:** A secondary movable laser beam picks up atoms from the edges and places them into the center to build a full $8 \times 8$ grid (Blue rings).
 
-### 4.4 The Three Rules of the Sorting Engine
+**Cast a wider net:** Shine $144$ laser traps ($12 \times 12$). With 50% odds, 75 to 80 atoms are caught across the grid.
 
-* **No Collisions (The Outer Hallway):** Atoms cannot pass through each other. If a moving atom touches a stationary one, both are lost. If an atom gets blocked by neighbors, it moves out into the perimeter buffer corridor (the purple dashed boundary) to bypass traffic and re-enter safely.
-* **Center-Outward Parking:** If outer target positions are filled first, they form a wall that blocks atoms trying to reach the center. The algorithm fills the dead center of the target square first and works outward.
-* **Speed vs. Lifetime:** Trapped atoms have a finite lifetime before colliding with stray background gas particles. The algorithm finds the shortest possible paths so the entire assembly finishes in under $0.05$ seconds (50 milliseconds), maintaining a $>99.8\%$ survival rate.
+**Take a picture:** A sensitive camera identifies which traps are filled (Red dots) and which are empty (Gray dots).
+
+**Use a moving laser crane:** A secondary movable laser beam picks up atoms from the edges and places them into the center to build a full $8 \times 8$ grid (Blue rings).
+
+### The Three Rules of the Sorting Engine
+
+- **No Collisions (The Outer Hallway):** Atoms cannot pass through each other. If a moving atom touches a stationary one, both are lost. If an atom gets blocked by neighbors, it moves out into the perimeter buffer corridor (the purple dashed boundary) to bypass traffic and re-enter safely.
+- **Center-Outward Parking:** If outer target positions are filled first, they form a wall that blocks atoms trying to reach the center. The algorithm fills the dead center of the target square first and works outward.
+- **Speed vs. Lifetime:** Trapped atoms have a finite lifetime before colliding with stray background gas particles. The algorithm finds the shortest possible paths so the entire assembly finishes in under $0.05$ seconds (50 milliseconds), maintaining a $>99.8\%$ survival rate.
 
 Stochastic Array Loading (P ~ 0.55)
                  │
@@ -500,4 +514,4 @@ Static Trapping Array                Dynamic Shuttling Tweezers
               High-NA Microscope Objective
                             │
                             ▼
-             Atom Rearrangement in Vacuum
+              Atom Rearrangement in Vacuum
